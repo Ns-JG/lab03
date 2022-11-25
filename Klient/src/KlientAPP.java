@@ -1,5 +1,6 @@
 import java.awt.*;
 import java.awt.event.*;
+import java.io.File;
 import java.io.IOException;
 import model.File_reader;
 import model.Order;
@@ -61,6 +62,7 @@ public class KlientAPP extends Frame{
                     right_panel.add(ready_orders_label);
                     ready_orders.forEach(n -> {
                         var b = new Button(n.menu_name);
+                        b.setName(n.id);
                         b.addActionListener(order_b_activate_pay(b));
                         b.setBackground(Color.BLACK);
                         KlientAPP.right_panel.add(b);
@@ -83,13 +85,15 @@ public class KlientAPP extends Frame{
     public ActionListener order_b_write() { return e -> {
             var contents = this.picked.getText().split(" ");
             contents[0] = "";
-            System.out.println(String.join(" ", contents));
+            //System.out.println(String.join(" ", contents));
             try {File_reader.dodaj_zamowienie(this.choosen.getLabel()); }
             catch (IOException err) {err.printStackTrace();}}; }
 
     public ActionListener order_b_activate_pay(Button button) { return  e-> {
         right_panel.remove(button);
-        // zmien flage w pliku dla button
+        try { File_reader.zmien_stan_zamowienia(button.getName()); }
+        catch (IOException err) { err.printStackTrace(); }
+
         System.out.println("PAY FOR:\t"+button.getLabel());
     }; }
     static public void main(String[] args) { new KlientAPP(); }

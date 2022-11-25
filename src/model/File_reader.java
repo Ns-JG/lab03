@@ -1,6 +1,7 @@
 package model;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.lang.reflect.Array;
 import java.nio.file.Paths;
 import java.nio.file.Path;
 import java.util.*;
@@ -46,7 +47,7 @@ public abstract class File_reader {
     public static void dodaj_zamowienie(String menu_name) throws IOException { // schemat zamowienia: [Order.to_file_from() -> String : "Status, ]
         File zam = File_reader.zam_path.toFile();
         FileWriter file_writer = new FileWriter(zam, true);
-        file_writer.write(String.join(",",Integer.toString( order_count), menu_name, Order.status.ORDERED.toString(), "\n"));
+        file_writer.write(String.join(",",Integer.toString(++order_count), menu_name, Order.status.ORDERED.toString(), "\n"));
         file_writer.close();
     }
 
@@ -55,5 +56,15 @@ public abstract class File_reader {
         var zamowienia_filtr = new ArrayList<Order>();
         zamowienia.forEach(n -> { if (n.current_status.equals(status.toString())) { zamowienia_filtr.add(n); }});
         return zamowienia_filtr;
+    }
+    public static void zmien_stan_zamowienia(String ID, Order.status status, String cook_id, String seller_id) throws IOException {
+        var zamowienia = new HashMap<Integer, ArrayList<String>>();
+        for (Order order : File_reader.parse_zamowienia()) {
+            var id = Integer.parseInt(order.id);
+            var status_w = status == null ? order.current_status.toString() : status.toString();
+            var cook_id_w = cook_id == null ? order.cook_id : cook_id;
+            var seller_id_w = seller_id == null ? order.seller_id : seller_id;
+            zamowienia.put(id, new ArrayList<>(Arrays.asList(order.menu_name, status_w, cook_id_w, seller_id_w)));
+        }
     }
 }
