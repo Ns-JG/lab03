@@ -1,6 +1,6 @@
+package Klient;
 import java.awt.*;
 import java.awt.event.*;
-import java.io.File;
 import java.io.IOException;
 import model.File_reader;
 import model.Order;
@@ -10,9 +10,7 @@ public class KlientAPP extends Frame{
 
     private final Label picked = new Label("Wybrane: NIC", Label.CENTER);
     private final Button order_b = new Button("Zamów");
-    private final Button pay_b = new Button("Zapłać");
-    private final Button get_order_b = new Button("Odbierz zamówienie");
-    private static final JPanel right_panel = new JPanel();
+    private final JPanel right_panel = new JPanel();
     private Button choosen;
 
     public KlientAPP() {
@@ -45,7 +43,7 @@ public class KlientAPP extends Frame{
         add(right_panel);
 
         // params
-        setTitle("KlientAPP");
+        setTitle("Klient.KlientAPP");
         setLayout(new GridLayout(1,3));
         addMouseListener(new MouseListener() {
 
@@ -54,7 +52,7 @@ public class KlientAPP extends Frame{
             @Override public void mouseReleased(MouseEvent e) {}
             @Override public void mouseEntered(MouseEvent e) {
                 try {
-                    var ready_orders = File_reader.pobierz_zamowienia(Order.status.ORDERED);
+                    var ready_orders = File_reader.pobierz_zamowienia(Order.status.READY);
                     right_panel.removeAll();
                     var ready_orders_label = new Label("Zapłać za:", Label.CENTER);
                     ready_orders_label.setFont(new Font("Verdana", Font.BOLD, 30));
@@ -65,7 +63,7 @@ public class KlientAPP extends Frame{
                         b.setName(n.id);
                         b.addActionListener(order_b_activate_pay(b));
                         b.setBackground(Color.BLACK);
-                        KlientAPP.right_panel.add(b);
+                        right_panel.add(b);
                     } );
                 } catch (IOException err) {err.printStackTrace();}
                 SwingUtilities.updateComponentTreeUI(right_panel);
@@ -81,20 +79,20 @@ public class KlientAPP extends Frame{
             this.order_b.setEnabled(true);
             this.picked.setText("Wybrane: "+button.getLabel());
             this.choosen = button;
-            };  }
+    }; }
     public ActionListener order_b_write() { return e -> {
             var contents = this.picked.getText().split(" ");
             contents[0] = "";
             //System.out.println(String.join(" ", contents));
             try {File_reader.dodaj_zamowienie(this.choosen.getLabel()); }
-            catch (IOException err) {err.printStackTrace();}}; }
-
+            catch (IOException err) {err.printStackTrace();}
+    }; }
     public ActionListener order_b_activate_pay(Button button) { return  e-> {
+       // System.out.println("PAY ID:\t"+button.getName()+" name "+button.getLabel());
         right_panel.remove(button);
-        try { File_reader.zmien_stan_zamowienia(button.getName()); }
+        try { File_reader.zmien_stan_zamowienia_status(Integer.parseInt(button.getName()), Order.status.SOLD); }
         catch (IOException err) { err.printStackTrace(); }
 
-        System.out.println("PAY FOR:\t"+button.getLabel());
     }; }
     static public void main(String[] args) { new KlientAPP(); }
 }
