@@ -1,4 +1,7 @@
-1,kotlet schabowy,READY
-2,kapuśniak,ORDERED
-3,krupnik,ORDERED
-4,zupa ogórkowa,READY
+1,kluski,GIVEN,1,1,12,15zl
+2,bigos,GIVEN,1,1,14,20zl
+3,rosół,GIVEN,1,1,16,30zl
+4,rosół,GIVEN,1,1,10,17zl
+5,żurek,GIVEN,1,1,10,17zl
+6,bigos,GIVEN,1,1,8,15zl
+7,kluski,GIVEN,1,1,5,10zl

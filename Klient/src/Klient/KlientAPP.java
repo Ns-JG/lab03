@@ -7,13 +7,14 @@ import model.Order;
 import javax.swing.*;
 
 public class KlientAPP extends Frame{
-
+    public static int ID = 1;
     private final Label picked = new Label("Wybrane: NIC", Label.CENTER);
     private final Button order_b = new Button("Zamów");
     private final JPanel right_panel = new JPanel();
     private Button choosen;
-
     public KlientAPP() {
+        KlientAPP.ID++;
+        File_reader.avaiable_acceses++;
 
         JPanel left_panel = new JPanel(); left_panel.setBackground(Color.BLACK); left_panel.setLayout(new BoxLayout(left_panel, BoxLayout.Y_AXIS));
         JPanel center_panel = new JPanel(); center_panel.setBackground(Color.BLACK); center_panel.setLayout(null);
@@ -34,7 +35,6 @@ public class KlientAPP extends Frame{
 
         center_panel.add(picked);
         center_panel.add(order_b);
-
 
         left_panel.add(menu_label);
         File_reader.menu_as_list.forEach(n -> { var b = new Button(n); b.setBackground(Color.BLACK); b.addActionListener(this.menu_b_action(b)); left_panel.add(b); } );
@@ -83,14 +83,18 @@ public class KlientAPP extends Frame{
     public ActionListener order_b_write() { return e -> {
             var contents = this.picked.getText().split(" ");
             contents[0] = "";
-            //System.out.println(String.join(" ", contents));
-            try {File_reader.dodaj_zamowienie(this.choosen.getLabel()); }
+            try { File_reader.dodaj_zamowienie(this.choosen.getLabel(), KlientAPP.ID); }
             catch (IOException err) {err.printStackTrace();}
     }; }
     public ActionListener order_b_activate_pay(Button button) { return  e-> {
-       // System.out.println("PAY ID:\t"+button.getName()+" name "+button.getLabel());
         right_panel.remove(button);
-        try { File_reader.zmien_stan_zamowienia_status(Integer.parseInt(button.getName()), Order.status.SOLD); }
+        try { File_reader.zmien_stan_zamowienia_status(
+                Integer.parseInt(button.getName()),
+                Order.status.PAID,
+                null,
+                null,
+                null,
+                null); }
         catch (IOException err) { err.printStackTrace(); }
 
     }; }
